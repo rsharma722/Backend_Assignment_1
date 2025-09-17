@@ -7,8 +7,8 @@ export interface PortfolioResult {
   summary: string;
 }
 
-// This is Interface for individual assets
-export interface PortfolioAsset {
+// This is Interface for largest holding
+export interface Asset {
   name: string;
   value: number;
   category: string;
@@ -49,4 +49,13 @@ export function computePortfolioPerformance(
     changePercentage,
     summary,
   };
+}
+
+// Function First :the Largest Holding
+export function findLargestHolding(assets: Asset[]): Asset | null {
+    return assets.length
+        ? assets.reduce((largest, current) =>
+            current.value > largest.value ? current : largest
+        )
+        : null;
 }

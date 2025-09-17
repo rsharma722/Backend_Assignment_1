@@ -1,4 +1,8 @@
-import { computePortfolioPerformance } from '../src/portfolio/portfolioPerformance';
+import { 
+    computePortfolioPerformance,
+    findLargestHolding, 
+    Asset
+} from '../src/portfolio/portfolioPerformance';
 
 describe('computePortfolioPerformance', () => {
 
@@ -30,4 +34,41 @@ describe('computePortfolioPerformance', () => {
     expect(result.summary).toContain('gained significantly');
   });
 
+});
+
+describe('findLargestHolding', () => {
+  const sampleAssets: Asset[] = [
+    { name: 'Tesla Stock', value: 20000, category: 'stock' },
+    { name: 'Amazon Stock', value: 35000, category: 'stock' },
+    { name: 'Beach House', value: 450000, category: 'real estate' },
+    { name: 'Corporate Bonds', value: 25000, category: 'bond' },
+  ];
+
+  it('should return the asset with the highest value', () => {
+    const largest = findLargestHolding(sampleAssets);
+
+    expect(largest).toBeDefined();
+    expect(largest!.name).toBe('Beach House');
+    expect(largest!.value).toBe(450000);
+  });
+
+  it('should return null for empty assets array', () => {
+    const result = findLargestHolding([]);
+
+    expect(result).toBeNull();
+  });
+
+  it('should handle tied values by returning the first largest', () => {
+    const tiedAssets: Asset[] = [
+      { name: 'Asset X', value: 20000, category: 'stock' },
+      { name: 'Asset Y', value: 20000, category: 'bond' },
+      { name: 'Asset Z', value: 15000, category: 'real estate' },
+    ];
+
+    const largest = findLargestHolding(tiedAssets);
+
+    expect(largest).toBeDefined();
+    expect(largest!.value).toBe(20000);
+    expect(largest!.name).toBe('Asset X');
+  });
 });
