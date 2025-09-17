@@ -14,9 +14,9 @@ export interface Asset {
   category: string;
 }
 
-// This is Interface for asset allocation percentages
-export interface AllocationPercentages {
-  [category: string]: number;
+// This is Interface for asset allocation
+export interface AssetAllocation {
+ [assetType: string]: number;
 }
 
 // THe Function to calculate portfolio performance
@@ -58,4 +58,26 @@ export function findLargestHolding(assets: Asset[]): Asset | null {
             current.value > largest.value ? current : largest
         )
         : null;
+}
+// Function two : Asset Allocation Percentage
+export function calculateAssetAllocation(assets: Asset[]): AssetAllocation {
+  if (!assets || assets.length === 0) {
+    return {};
+  }
+
+  const total = assets.reduce((sum, a) => sum + a.value, 0);
+  if (total === 0) {
+    return {};
+  }
+
+  const allocation = assets.reduce<AssetAllocation>((acc, asset) => {
+    const share = (asset.value / total) * 100;
+    acc[asset.category] = (acc[asset.category] || 0) + share;
+    return acc;
+  }, {});
+
+  //This will normalize and round values to 2 decimals
+  return Object.fromEntries(
+    Object.entries(allocation).map(([key, val]) => [key, +val.toFixed(2)])
+  );
 }

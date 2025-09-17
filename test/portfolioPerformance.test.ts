@@ -1,7 +1,8 @@
 import { 
     computePortfolioPerformance,
     findLargestHolding, 
-    Asset
+    Asset,
+    calculateAssetAllocation,
 } from '../src/portfolio/portfolioPerformance';
 
 describe('computePortfolioPerformance', () => {
@@ -70,5 +71,39 @@ describe('findLargestHolding', () => {
     expect(largest).toBeDefined();
     expect(largest!.value).toBe(20000);
     expect(largest!.name).toBe('Asset X');
+  });
+});
+
+
+describe('calculateAssetAllocation', () => {
+  const demoAssets: Asset[] = [
+    { name: 'Tesla Stock', value: 40000, category: 'stock' },
+    { name: 'Amazon Stock', value: 40000, category: 'stock' },
+    { name: 'US Treasury Bonds', value: 20000, category: 'bond' }
+  ];
+
+  it('should calculate correct percentages for mixed distribution', () => {
+    const allocation = calculateAssetAllocation(demoAssets);
+
+    expect(allocation.stock).toBe(80); 
+    expect(allocation.bond).toBe(20); 
+  });
+
+  it('should handle another uneven distribution', () => {
+    const unevenAssets: Asset[] = [
+      { name: 'Real Estate Fund', value: 60000, category: 'real estate' },
+      { name: 'Corporate Bonds', value: 40000, category: 'bond' }
+    ];
+
+    const allocation = calculateAssetAllocation(unevenAssets);
+
+    expect(allocation['real estate']).toBe(60); 
+    expect(allocation.bond).toBe(40);          
+  });
+
+  it('should return an empty object for no assets', () => {
+    const allocation = calculateAssetAllocation([]);
+
+    expect(allocation).toEqual({});
   });
 });
